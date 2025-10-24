@@ -2,7 +2,7 @@ import express from 'express';
 import ytdl from 'ytdl-core';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 app.get('/api/downloader/ytv', async (req, res) => {
   const videoURL = req.query.url;
@@ -13,18 +13,16 @@ app.get('/api/downloader/ytv', async (req, res) => {
   try {
     const info = await ytdl.getInfo(videoURL);
     const title = info.videoDetails.title.replace(/[/\\?%*:|"<>]/g, '-');
-    const downloadURL = `https://download.example.com/?video=${encodeURIComponent(videoURL)}`;
 
+    // For demonstration, just returning video title and URL
     res.json({
       status: true,
-      creator: 'YourName or API',
-      data: {
-        title: title,
-        url: downloadURL,
-      },
+      title: title,
+      videoUrl: videoURL,
     });
   } catch (error) {
-    res.status(500).json({ status: false, message: 'Error processing video' });
+    console.error('Error processing video:', error);
+    res.status(500).json({ status: false, message: 'Error processing video', error: error.message });
   }
 });
 
